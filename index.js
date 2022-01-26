@@ -29,8 +29,8 @@ const startQuery = () => {
       message: "select an option",
       choices: [
         //view employee data
-        "view employee",
         "view role",
+        "view employee",
         //add employee
         "add role",
         "add department",
@@ -79,6 +79,9 @@ const addDepartment = () => {
     });
 };
 
+
 (async () => {
   await startQuery();
 })();
+
+
