@@ -11,8 +11,34 @@ VALUES
 ("Intern", 30000, 2);
 
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES 
-("Alistair", "Houghton", 1, null),
-("Joe", "Bloggs", 2, 1),
-("Jimmy", "Smith", 3, 1);
+-- INSERT INTO employee (first_name, last_name, role_id, manager_id)
+-- VALUES 
+-- ("Alistair", "Houghton", 1, null),
+-- ("Joe", "Bloggs", 2, 1),
+-- ("Jimmy", "Smith", 3, 1);
+
+-- const addRole = () => {
+--   inquirer.prompt({
+--     name: "title",
+--     type: "input",
+--     message: "Enter your role",
+--   },
+--   {
+--     name: "salary",
+--     type: "input",
+--     message: "Enter Salary",
+--   },
+--  )
+--   .then((answer) => {
+--     const query = connection.query(
+--       "INSERT INTO role SET ?",
+--       answer,
+
+--       (err, res) => {
+--         if (err) throw err;
+--         console.log(`${answer.title} has been added`);
+--         startQuery();
+--       }
+--     );
+--   });
+-- };
