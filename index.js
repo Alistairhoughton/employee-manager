@@ -102,7 +102,7 @@ const addDepartment = () => {
 };
 
 const addEmployee = () => {
-  inquirer.prompt({
+  inquirer.prompt([{
     name: "first_name",
     type: "input",
     message: "Enter first name",
@@ -111,7 +111,7 @@ const addEmployee = () => {
     name: "last_name",
     type: "input",
     message: "Enter surname name",
-  },
+  }],
  )
   .then((answer) => {
     const query = connection.query(
@@ -126,6 +126,40 @@ const addEmployee = () => {
     );
   });
 };
+
+
+const viewDepartment = () => {
+  const query = connection.query(
+    "SELECT department FROM employee_manager_db.department",
+    function (err, result,) {
+      if (err) throw err;
+      console.log(result);
+    }
+  );
+  startQuery()
+}
+
+const viewRole = () => {
+  const query = connection.query(
+    "SELECT title FROM employee_manager_db.role",
+    function (err, result,) {
+      if (err) throw err;
+      console.log(result);
+    }
+  );
+  startQuery()
+}
+
+const viewEmployee = () => {
+  const query = connection.query(
+    "SELECT * FROM employee_manager_db.employee",
+    function (err, result,) {
+      if (err) throw err;
+      console.log(result);
+    }
+  );
+  startQuery()
+}
 
 (async () => {
   await startQuery();
