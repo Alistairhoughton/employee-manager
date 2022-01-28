@@ -17,7 +17,7 @@ connection.connect((err) => {
   console.log(`connected as id: ${connection.threadId}`);
 });
 
-//start our query 
+//start our query
 
 const startQuery = () => {
   inquirer
@@ -26,17 +26,13 @@ const startQuery = () => {
       name: "options",
       message: "select an option",
       choices: [
-        //view employee data
         "view role",
         "view employee",
         "view department",
-        //add employee
         "add role",
         "add employee",
         "add department",
-        //update data
         "update employee",
-        //exit
         "exit",
       ],
     })
@@ -66,7 +62,7 @@ const startQuery = () => {
           addDepartment();
           break;
 
-          case "update employee":
+        case "update employee":
           updateEmployee();
           break;
 
@@ -78,7 +74,7 @@ const startQuery = () => {
     });
 };
 
-//================================== add department
+//================================== add department function
 
 const addDepartment = () => {
   inquirer
@@ -101,65 +97,155 @@ const addDepartment = () => {
     });
 };
 
-const addEmployee = () => {
-  inquirer.prompt([{
-    name: "first_name",
-    type: "input",
-    message: "Enter first name",
-  },
-  {
-    name: "last_name",
-    type: "input",
-    message: "Enter surname name",
-  }],
- )
-  .then((answer) => {
-    const query = connection.query(
-      "INSERT INTO employee SET ?",
-      answer,
+//================================== add employee function
 
-      (err, res) => {
-        if (err) throw err;
-        console.log(`${answer.first_name} has been added`);
-        startQuery();
-      }
-    );
-  });
+const addEmployee = () => {
+  inquirer
+    .prompt([
+      {
+        name: "first_name",
+        type: "input",
+        message: "Enter first name",
+      },
+      {
+        name: "last_name",
+        type: "input",
+        message: "Enter surname name",
+      },
+    ])
+    .then((answer) => {
+      const query = connection.query(
+        "INSERT INTO employee SET ?",
+        answer,
+
+        (err, res) => {
+          if (err) throw err;
+          console.log(`${answer.first_name} has been added`);
+          startQuery();
+        }
+      );
+    });
 };
 
+//================================== add role function
+
+const addRole = () => {
+  inquirer
+    .prompt([
+      {
+        name: "title",
+        type: "input",
+        message: "Enter title",
+      },
+      {
+        name: "salary",
+        type: "input",
+        message: "Enter salary",
+      },
+    ])
+    .then((answer) => {
+      const query = connection.query(
+        "INSERT INTO role SET ?",
+        answer,
+
+        (err, res) => {
+          if (err) throw err;
+          console.log(`${answer.title} has been added`);
+          startQuery();
+        }
+      );
+    });
+};
+
+//================================== view department function
 
 const viewDepartment = () => {
   const query = connection.query(
     "SELECT department FROM employee_manager_db.department",
-    function (err, result,) {
+    function (err, result) {
       if (err) throw err;
       console.log(result);
     }
   );
-  startQuery()
-}
+  startQuery();
+};
+
+//================================== view role function
 
 const viewRole = () => {
   const query = connection.query(
     "SELECT title FROM employee_manager_db.role",
-    function (err, result,) {
+    function (err, result) {
       if (err) throw err;
       console.log(result);
     }
   );
-  startQuery()
-}
+  startQuery();
+};
+
+//================================== view employee function
 
 const viewEmployee = () => {
   const query = connection.query(
     "SELECT * FROM employee_manager_db.employee",
-    function (err, result,) {
+    function (err, result) {
       if (err) throw err;
       console.log(result);
     }
   );
-  startQuery()
-}
+  startQuery();
+};
+
+//============================================= update
+
+const updateEmployee = () => {
+  return connection.query(
+    "SELECT Employee.first_name, Employee.last_name, employee.id, role.title, role.id FROM Employee LEFT JOIN Role ON EMployee.id = Role.id",
+
+    (err, res) => {
+      inquirer.prompt([
+        {
+          name: "employee",
+          type: "list",
+          choices() {
+            console.log("response console log",res);
+            return res.map(( {first_name, last_name, id}) => {
+              return { name: first_name + " " + last_name, value: id };
+            });
+          },
+          message: "select employee to update ",
+        },
+        {
+          name: "role",
+          type: "list",
+          choices() {
+            return res.map(({ id, title }) => {
+              return {name: title, value: id}
+            });
+          },
+          message: "select new role"
+        },
+      ]).then((answer) => {
+        connection.query(
+          "UPDATE  employee SET ? WHERE ?",
+          [{
+            role_id: answer.role,
+          },
+        {
+          id: answer.employee
+        }],
+          function (err, res){
+            if (err) throw err;
+            console.log(`the ${answer.employee} role has been updated`)
+            startQuery();
+          }
+        )
+      })
+    }
+  );
+};
+
+// ========================================= async await
 
 (async () => {
   await startQuery();
